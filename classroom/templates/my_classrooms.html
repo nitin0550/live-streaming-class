@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Classrooms - Live Classroom</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .classroom-card {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: box-shadow 0.3s;
+        }
+        .classroom-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .classroom-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .classroom-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .student-code {
+            background: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .classroom-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.ended {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .classroom-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            margin-bottom: 20px;
+        }
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .join-button {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+        .join-button:hover {
+            background: #0056b3;
+        }
+        .join-button.disabled {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="{% url 'home' %}">← Back to Home</a>
+        </div>
+
+        <h1>📋 My Classrooms</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if classrooms %}
+            {% for classroom in classrooms %}
+                <div class="classroom-card">
+                    <div class="classroom-header">
+                        <div class="classroom-title">{{ classroom.title }}</div>
+                        <div class="student-code">{{ classroom.stream_id }}</div>
+                    </div>
+                    
+                    <div class="classroom-info">
+                        <div class="info-item">
+                            <span>📚</span>
+                            <span>{{ classroom.course.title }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span>📅</span>
+                            <span>{{ classroom.start_time|date:"M d, Y H:i" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span>📊</span>
+                            <span class="status {% if classroom.is_active %}active{% else %}ended{% endif %}">
+                                {% if classroom.is_active %}🟢 Active{% else %}🔴 Ended{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="classroom-actions">
+                        {% if classroom.is_active %}
+                            <a href="{% url 'classroom_chat' classroom.code %}" class="btn btn-primary">
+                                🚀 Enter Classroom
+                            </a>
+                            <a href="{% url 'end_classroom' classroom.code %}" 
+                               class="btn btn-danger"
+                               onclick="return confirm('Are you sure you want to end this classroom session?')">
+                                ⏹️ End Session
+                            </a>
+                        {% else %}
+                            <a href="{% url 'classroom_chat' classroom.code %}" class="btn btn-secondary">
+                                👁️ View Classroom
+                            </a>
+                        {% endif %}
+                        
+                        <button class="btn btn-success" onclick="copyStudentCode('{{ classroom.code }}')">
+                            📋 Copy Student Code
+                        </button>
+                    </div>
+
+                    <div class="join-classroom">
+                        {% if classroom.code %}
+                            <a href="{% url 'classroom_chat' classroom.code %}" class="join-button">Join Classroom</a>
+                        {% else %}
+                            <span class="join-button disabled">No Code</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p class="no-classrooms">You haven't created or joined any classrooms yet.</p>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="icon">🏫</div>
+                <h3>No Classrooms Yet</h3>
+                <p>You haven't created any classrooms yet. Start by creating your first classroom!</p>
+                <a href="{% url 'create_classroom' %}" class="btn btn-primary">
+                    🏫 Create Your First Classroom
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function copyStudentCode(code) {
+            navigator.clipboard.writeText(code).then(function() {
+                // Create a temporary success message
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '#28a745';
+                }, 2000);
+            }).catch(function(err) {
+                alert('Failed to copy student code: ' + code);
+            });
+        }
+    </script>
+</body>
+</html>

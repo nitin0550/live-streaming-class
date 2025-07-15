@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+
+# Django
+*.log
+db.sqlite3
+staticfiles/
+media/
+
+# Other
+.DS_Store
+.vscode/

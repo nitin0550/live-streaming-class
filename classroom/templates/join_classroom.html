@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Join Classroom - Live Classroom</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .btn {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #1565c0;
+            font-size: 14px;
+        }
+        .code-format {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👨‍🎓 Join Classroom</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="info-box">
+            <p><strong>📋 How to join:</strong></p>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li>Get the <span class="code-format">6-character code</span> from your teacher</li>
+                <li>Enter the code below (example: <span class="code-format">ABC123</span>)</li>
+                <li>Click "Join Classroom" to start learning!</li>
+            </ul>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="student_code">Student Code:</label>
+                <input 
+                    type="text" 
+                    id="student_code" 
+                    name="student_code" 
+                    placeholder="ABC123"
+                    maxlength="6"
+                    required
+                    autocomplete="off"
+                    style="text-transform: uppercase;"
+                >
+            </div>
+            <button type="submit" class="btn">🚀 Join Classroom</button>
+        </form>
+        
+        <div class="links">
+            <a href="{% url 'home' %}">🏠 Back to Home</a>
+            {% if not user.is_authenticated %}
+                | <a href="{% url 'login' %}">🔑 Login</a>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 30px; font-size: 12px; color: #666; text-align: center;">
+            <p><strong>Need help?</strong><br>
+            Ask your teacher for the 6-character classroom code.</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-format the input to uppercase
+        document.getElementById('student_code').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+        
+        // Focus on the input field when page loads
+        document.getElementById('student_code').focus();
+    </script>
+</body>
+</html>

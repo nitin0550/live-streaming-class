@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: liveclass_redis
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    container_name: liveclass_web
+    command: daphne -b 0.0.0.0 -p 8000 liveclass_project.asgi:application
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=liveclass_project.settings
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  nginx:
+    image: nginx:latest
+    container_name: liveclass_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./staticfiles:/app/staticfiles
+    depends_on:
+      - web
