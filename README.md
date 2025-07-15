@@ -25,32 +25,7 @@ A real-time interactive classroom application built with Django, WebRTC, and Web
 - Redis server
 - Modern web browser with WebRTC support
 
-## Quick Setup
 
-1. **Clone and navigate to the project:**
-   ```bash
-   cd /home/nitin/live_class/liveclass_project
-   ```
-
-2. **Run the setup script:**
-   ```bash
-   ./setup.sh
-   ```
-
-3. **Start Redis server** (in a separate terminal):
-   ```bash
-   redis-server
-   ```
-
-4. **Start the Django development server:**
-   ```bash
-   source venv/bin/activate
-   python manage.py runserver
-   ```
-
-5. **Visit the application:**
-   - Main app: http://127.0.0.1:8000
-   - Admin panel: http://127.0.0.1:8000/admin
 
 ## Manual Setup
 
@@ -205,7 +180,7 @@ For production deployment:
 
 ## License
 
-This project is available under the MIT License.
+This project is available under the nitin maurya.
 
 ## Support
 
